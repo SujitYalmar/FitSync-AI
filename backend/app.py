@@ -146,7 +146,7 @@ def gen_combined_plan(name: str, meal: str, workout: str):
 # -----------------------------------------------------
 # 📌 API ROUTE — FRONTEND WILL CALL THIS
 # -----------------------------------------------------
-@app.post("/generate-plan")
+@app.post("https://fitsync-ai.onrender.com/generate-plan")
 def generate_plan(data: UserInput):
     # 1) Generate diet + workout
     meal = gen_meal_plan(data)
