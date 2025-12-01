@@ -368,6 +368,9 @@
             document.getElementById('goal').value = value;
         }
 
+        // 👉 Backend base URL (Render)
+        const API_BASE_URL = "https://fitsync-ai.onrender.com";
+
         // --- Data Fetching Logic ---
         let planData = {};
 
@@ -413,21 +416,30 @@
             };
 
             try {
+                console.log("Sending payload to backend:", payload);
+
                 // Fetch Data
-                const response = await fetch("http://127.0.0.1:8000/generate-plan", {
+                const response = await fetch(`${API_BASE_URL}/generate-plan`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
 
-                if (!response.ok) throw new Error("Backend connection failed");
+                console.log("Backend status:", response.status);
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    console.error("Backend error body:", errText);
+                    throw new Error(`Backend connection failed (status ${response.status})`);
+                }
 
                 planData = await response.json();
+                console.log("Backend response JSON:", planData);
 
                 // Render Markdown
-                document.getElementById('content-meal').innerHTML = marked.parse(planData.meal_plan);
-                document.getElementById('content-workout').innerHTML = marked.parse(planData.workout_plan);
-                document.getElementById('content-combined').innerHTML = marked.parse(planData.combined_plan);
+                document.getElementById('content-meal').innerHTML = marked.parse(planData.meal_plan || "");
+                document.getElementById('content-workout').innerHTML = marked.parse(planData.workout_plan || "");
+                document.getElementById('content-combined').innerHTML = marked.parse(planData.combined_plan || "");
 
                 // Show UI
                 clearInterval(msgInterval);
@@ -441,7 +453,8 @@
 
             } catch (error) {
                 clearInterval(msgInterval);
-                alert("Error connecting to Backend. Ensure app.py is running!");
+                console.error("Error while generating plan:", error);
+                alert("Error connecting to backend.\n\n" + error.message + "\n\nCheck:\n- Render URL is correct\n- Backend is running without errors");
                 loader.classList.add('hidden');
                 welcome.classList.remove('hidden');
             } finally {
@@ -468,9 +481,6 @@
                 html2canvas: { scale: 2, backgroundColor: '#18181b' },
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
-            
-            // Clone element to style it for PDF (remove dark mode constraints if needed)
-            // For now, we print exactly what is seen
             html2pdf().set(opt).from(element).save();
         }
 
