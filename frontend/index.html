@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync AI - Synchronize Health</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CORE THEME --- */
+        :root {
+            --bg-color: #09090b;
+            --card-bg: #18181b;
+            --accent: #8b5cf6; /* Violet */
+            --accent-glow: rgba(139, 92, 246, 0.3);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* --- GLASSMORPHISM --- */
+        .glass-card {
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- INPUTS --- */
+        .input-group label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .input-field {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .input-field:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+            outline: none;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- BUTTONS --- */
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px var(--accent);
+        }
+
+        .btn-action {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: white;
+        }
+
+        /* --- MARKDOWN STYLING --- */
+        .markdown-body {
+            color: #d4d4d8;
+            line-height: 1.7;
+        }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            color: white;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .markdown-body h3 {
+            color: #e879f9; /* Pink-purple for headers */
+            font-size: 1.25rem;
+        }
+        .markdown-body strong {
+            color: #c084fc; /* Violet for bold */
+        }
+        .markdown-body ul {
+            list-style-type: disc;
+            padding-left: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* --- TABLES (Crucial for Data) --- */
+        .markdown-body table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: block; /* Mobile scroll */
+            overflow-x: auto;
+        }
+        .markdown-body th {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            white-space: nowrap;
+        }
+        .markdown-body td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            min-width: 140px;
+        }
+        .markdown-body tr:last-child td { border-bottom: none; }
+        .markdown-body tr:hover td { background: rgba(255,255,255,0.02); }
+
+        /* --- TABS --- */
+        .tab-btn {
+            position: relative;
+            color: var(--text-secondary);
+        }
+        .tab-btn.active {
+            color: white;
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            border-radius: 2px;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .animate-pulse-ring::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            animation: pulse-ring 2s infinite;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex items-center justify-center">
+
+    <div class="w-full max-w-[1400px] grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+
+        <div class="lg:hidden col-span-1 mb-2 flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/20">
+                <i class="fa-solid fa-dna text-white text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-white">FitSync AI</h1>
+                <p class="text-xs text-gray-400">Sync Body & Mind</p>
+            </div>
+        </div>
+        
+        <aside class="glass-card rounded-2xl p-6 lg:col-span-3 h-fit border-t border-white/10 sticky top-4">
+            
+            <div class="hidden lg:flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/20">
+                    <i class="fa-solid fa-dna text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">FitSync AI</h1>
+                    <p class="text-xs text-gray-400 tracking-wide">V 2.0.0</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 mb-6">
+                <div class="h-px bg-white/10 flex-1"></div>
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Profile</span>
+                <div class="h-px bg-white/10 flex-1"></div>
+            </div>
+            
+            <form id="fitnessForm" onsubmit="generatePlan(event)">
+                <div class="space-y-5">
+                    
+                    <div class="input-group">
+                        <label>Your Name</label>
+                        <div class="relative">
+                            <i class="fa-regular fa-user absolute left-3 top-3 text-gray-500 text-sm"></i>
+                            <input type="text" id="name" class="input-field w-full pl-9 p-2.5 rounded-lg text-sm" value="Alex" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="input-group">
+                            <label>Age</label>
+                            <input type="number" id="age" class="input-field w-full p-2.5 rounded-lg text-sm" value="26" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Weight (kg)</label>
+                            <input type="number" id="weight" class="input-field w-full p-2.5 rounded-lg text-sm" value="72" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="input-group">
+                            <label>Height (cm)</label>
+                            <input type="number" id="height" class="input-field w-full p-2.5 rounded-lg text-sm" value="175" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Activity</label>
+                            <select id="activity" class="input-field w-full p-2.5 rounded-lg text-sm cursor-pointer appearance-none">
+                                <option value="Low">Low (Sedentary)</option>
+                                <option value="Moderate" selected>Moderate</option>
+                                <option value="High">High (Active)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Diet Type</label>
+                        <select id="diet" class="input-field w-full p-2.5 rounded-lg text-sm cursor-pointer appearance-none">
+                            <option value="Balanced" selected>Balanced</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                            <option value="Vegan">Vegan</option>
+                            <option value="Keto">Keto</option>
+                            <option value="Paleo">Paleo</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Primary Goal</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" onclick="selectGoal(this, 'Weight Loss')" class="goal-btn bg-white/5 border border-white/10 rounded-lg p-2 text-xs hover:bg-white/10 transition text-center text-gray-400">Weight Loss</button>
+                            <button type="button" onclick="selectGoal(this, 'Muscle Gain')" class="goal-btn active bg-violet-600/20 border border-violet-500 rounded-lg p-2 text-xs text-white text-center shadow-sm shadow-violet-500/20">Muscle Gain</button>
+                            <button type="button" onclick="selectGoal(this, 'Endurance')" class="goal-btn bg-white/5 border border-white/10 rounded-lg p-2 text-xs hover:bg-white/10 transition text-center text-gray-400">Endurance</button>
+                        </div>
+                        <input type="hidden" id="goal" value="Muscle Gain">
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn-primary w-full text-white font-bold py-3.5 rounded-xl shadow-lg flex justify-center items-center gap-2 mt-2 group">
+                        <span>Generate Strategy</span> 
+                        <i class="fa-solid fa-wand-magic-sparkles group-hover:rotate-12 transition"></i>
+                    </button>
+                </div>
+            </form>
+        </aside>
+
+        <main class="glass-card rounded-2xl p-6 md:p-10 lg:col-span-9 min-h-[600px] flex flex-col relative overflow-hidden bg-[#131316]/50">
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-white/5 pb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-white tracking-tight">Your FitSync Strategy</h2>
+                    <p class="text-sm text-gray-400 mt-1">Synchronizing diet and exercise protocols.</p>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-mono flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                        AGENTS READY
+                    </span>
+                    
+                    <div id="actions" class="hidden flex gap-2 animate-fade-in">
+                        <button onclick="copyToClipboard()" class="btn-action w-9 h-9 rounded-lg flex items-center justify-center text-gray-300" title="Copy Text">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                        <button onclick="downloadPDF()" class="btn-action px-4 h-9 rounded-lg text-sm text-white font-medium flex items-center gap-2" title="Download PDF">
+                            <i class="fa-solid fa-download"></i> PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="welcomeState" class="flex flex-col items-center justify-center flex-1 text-center">
+                <div class="relative w-24 h-24 mb-6">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-violet-600 to-pink-600 rounded-full blur-xl opacity-40 animate-pulse"></div>
+                    <div class="relative bg-[#1a1a1e] w-full h-full rounded-full flex items-center justify-center border border-white/10">
+                        <i class="fa-solid fa-fingerprint text-3xl text-gray-500"></i>
+                    </div>
+                </div>
+                <h3 class="text-xl font-semibold text-white mb-2">Awaiting Biometrics</h3>
+                <p class="text-gray-500 max-w-sm text-sm">Enter your details on the left panel to initialize the multi-agent synchronization process.</p>
+            </div>
+
+            <div id="loader" class="hidden absolute inset-0 bg-[#09090b]/90 backdrop-blur-md z-30 flex flex-col items-center justify-center">
+                <div class="relative w-20 h-20">
+                    <div class="absolute inset-0 rounded-full border-2 border-t-violet-500 border-r-transparent border-b-pink-500 border-l-transparent animate-spin"></div>
+                    <div class="absolute inset-2 rounded-full border-2 border-t-transparent border-r-violet-500 border-b-transparent border-l-pink-500 animate-spin" style="animation-direction: reverse;"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fa-solid fa-bolt text-white/50 animate-pulse"></i>
+                    </div>
+                </div>
+                <p id="loadingText" class="mt-6 text-white font-mono text-sm tracking-wider">INITIALIZING AGENTS...</p>
+            </div>
+
+            <div id="resultArea" class="hidden flex-col h-full">
+                
+                <div class="flex space-x-6 border-b border-white/5 mb-6 overflow-x-auto pb-1 no-scrollbar">
+                    <button onclick="showTab('combined')" id="tab-combined" class="tab-btn active pb-3 text-sm font-semibold whitespace-nowrap transition-colors">Overview Strategy</button>
+                    <button onclick="showTab('meal')" id="tab-meal" class="tab-btn pb-3 text-sm font-semibold whitespace-nowrap transition-colors">Nutrition Plan</button>
+                    <button onclick="showTab('workout')" id="tab-workout" class="tab-btn pb-3 text-sm font-semibold whitespace-nowrap transition-colors">Workout Protocol</button>
+                </div>
+
+                <div id="printContent" class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                    <div id="content-combined" class="markdown-body animate-fade-in-up"></div>
+                    <div id="content-meal" class="markdown-body hidden animate-fade-in-up"></div>
+                    <div id="content-workout" class="markdown-body hidden animate-fade-in-up"></div>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gray-500">
+                    <p>Generated by FitSync AI • Gemini 2.0 Flash</p>
+                    <p>Not Medical Advice</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- Goal Selection UI Logic ---
+        function selectGoal(btn, value) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.goal-btn').forEach(b => {
+                b.className = 'goal-btn bg-white/5 border border-white/10 rounded-lg p-2 text-xs hover:bg-white/10 transition text-center text-gray-400';
+            });
+            // Add active class to clicked button
+            btn.className = 'goal-btn active bg-violet-600/20 border border-violet-500 rounded-lg p-2 text-xs text-white text-center shadow-sm shadow-violet-500/20';
+            // Set hidden input value
+            document.getElementById('goal').value = value;
+        }
+
+        // --- Data Fetching Logic ---
+        let planData = {};
+
+        async function generatePlan(event) {
+            event.preventDefault();
+
+            // UI Elements
+            const btn = document.getElementById('submitBtn');
+            const loader = document.getElementById('loader');
+            const loadingText = document.getElementById('loadingText');
+            const welcome = document.getElementById('welcomeState');
+            const results = document.getElementById('resultArea');
+            const actions = document.getElementById('actions');
+
+            // Reset UI
+            btn.disabled = true;
+            loader.classList.remove('hidden');
+            welcome.classList.add('hidden');
+            results.classList.add('hidden');
+            actions.classList.add('hidden');
+
+            // Loading Animation Sequence
+            const messages = [
+                "ANALYZING BIOMETRICS...",
+                "CONSULTING NUTRITION AGENT...",
+                "DESIGNING WORKOUT PROTOCOL...",
+                "SYNCHRONIZING DATA..."
+            ];
+            let msgIndex = 0;
+            const msgInterval = setInterval(() => {
+                loadingText.innerText = messages[msgIndex % messages.length];
+                msgIndex++;
+            }, 800);
+
+            const payload = {
+                name: document.getElementById('name').value,
+                age: parseInt(document.getElementById('age').value),
+                weight: parseFloat(document.getElementById('weight').value),
+                height: parseFloat(document.getElementById('height').value),
+                activity_level: document.getElementById('activity').value,
+                dietary_preference: document.getElementById('diet').value,
+                fitness_goal: document.getElementById('goal').value
+            };
+
+            try {
+                // Fetch Data
+                const response = await fetch("http://127.0.0.1:8000/generate-plan", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error("Backend connection failed");
+
+                planData = await response.json();
+
+                // Render Markdown
+                document.getElementById('content-meal').innerHTML = marked.parse(planData.meal_plan);
+                document.getElementById('content-workout').innerHTML = marked.parse(planData.workout_plan);
+                document.getElementById('content-combined').innerHTML = marked.parse(planData.combined_plan);
+
+                // Show UI
+                clearInterval(msgInterval);
+                loader.classList.add('hidden');
+                results.classList.remove('hidden');
+                results.classList.add('flex');
+                actions.classList.remove('hidden');
+                actions.classList.add('flex');
+                
+                showTab('combined');
+
+            } catch (error) {
+                clearInterval(msgInterval);
+                alert("Error connecting to Backend. Ensure app.py is running!");
+                loader.classList.add('hidden');
+                welcome.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function showTab(tabName) {
+            ['meal', 'workout', 'combined'].forEach(t => {
+                document.getElementById(`content-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('active');
+            });
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // --- PDF Download Logic ---
+        function downloadPDF() {
+            const element = document.getElementById('printContent');
+            const opt = {
+                margin: 0.5,
+                filename: 'FitSync_Strategy.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, backgroundColor: '#18181b' },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            
+            // Clone element to style it for PDF (remove dark mode constraints if needed)
+            // For now, we print exactly what is seen
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // --- Copy Logic ---
+        function copyToClipboard() {
+            // Copy the active tab text
+            let activeText = "";
+            if (!document.getElementById('content-combined').classList.contains('hidden')) {
+                activeText = document.getElementById('content-combined').innerText;
+            } else if (!document.getElementById('content-meal').classList.contains('hidden')) {
+                activeText = document.getElementById('content-meal').innerText;
+            } else {
+                activeText = document.getElementById('content-workout').innerText;
+            }
+
+            navigator.clipboard.writeText(activeText).then(() => {
+                alert("Plan copied to clipboard!");
+            });
+        }
+    </script>
+</body>
+</html>

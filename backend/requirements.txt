@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+agno
+duckduckgo-search
+google-genai
+python-dotenv
