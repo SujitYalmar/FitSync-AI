@@ -1,118 +1,139 @@
-# FitSync-AI: AI Health & Fitness Plan Generator
+# 💪 FitSync-AI: AI Health & Fitness Plan Generator
 
-**Capstone Project for Kaggle's 5-Day AI Agents Intensive**
+<div align="center">
 
-## 🎯 Project Overview
+![GitHub License](https://img.shields.io/badge/license-MIT-green.svg)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![Status](https://img.shields.io/badge/status-Active-success)
+![Kaggle](https://img.shields.io/badge/Kaggle-5--Day%20Agents%20Intensive-blueviolet)
 
-FitSync-AI is a multi-agent AI system that generates personalized, data-driven health and fitness plans. Unlike static fitness apps, FitSync-AI uses machine learning models trained on Kaggle fitness datasets and intelligent agent orchestration to deliver dynamic, adaptive workout and diet recommendations tailored to each user's profile, goals, and progress.
+**A Production-Ready Multi-Agent AI System for Personalized Fitness & Nutrition Planning**
 
-This project demonstrates a production-ready implementation of the concepts from the **[5-Day AI Agents Intensive](https://www.kaggle.com/learn-guide/5-day-agents)** course by Google, including multi-agent systems, tool integration, memory management, and evaluation frameworks.
+[🎯 Overview](#-overview) • [🏗️ Architecture](#-architecture) • [🚀 Quick Start](#-quick-start) • [📊 Tech Stack](#-tech-stack) • [💡 Contributing](#-contributing)
 
----
-
-## 📋 Problem Statement
-
-**Challenge:** Most users track fitness data (steps, calories, workout logs) but struggle to convert that data into actionable, personalized recommendations. Existing fitness apps provide generic plans that don't adapt to individual progress, preferences, or changing circumstances.
-
-**Solution:** FitSync-AI automates the creation of personalized fitness and diet plans by:
-1. **Analyzing** user profiles (age, gender, fitness level, activity history, dietary preferences)
-2. **Modeling** fitness state using ML classifiers trained on real Kaggle datasets
-3. **Orchestrating** multi-agent workflows to generate, validate, and adapt plans
-4. **Delivering** actionable daily schedules with real-time feedback
+</div>
 
 ---
 
-## 🏗 Architecture
+## 🎯 Overview
 
-### System Design
+FitSync-AI is a **multi-agent AI system** that generates personalized, data-driven health and fitness plans. Unlike generic fitness apps, FitSync-AI uses:
+
+✨ **Machine Learning Models** trained on Kaggle fitness datasets  
+🤖 **Intelligent Agent Orchestration** for dynamic plan generation  
+📊 **Real-time Adaptation** based on user progress and feedback  
+🎨 **User-Centric Design** for seamless experience  
+
+**Capstone Project for [Kaggle's 5-Day AI Agents Intensive](https://www.kaggle.com/learn-guide/5-day-agents) Course**
+
+---
+
+## 📋 The Problem It Solves
+
+> **Challenge:** Users track fitness data (steps, calories, workouts) but struggle to convert that data into **personalized, actionable recommendations**. Existing fitness apps provide **generic, static plans** that don't adapt.
+
+**FitSync-AI's Solution:**
+
+1. ✅ **Analyzes** user profiles (age, fitness level, goals, preferences)
+2. ✅ **Models** fitness state using ML classifiers trained on real data
+3. ✅ **Orchestrates** multi-agent workflows to generate adaptive plans
+4. ✅ **Delivers** actionable daily schedules with real-time feedback
+
+---
+
+## 🏗️ System Architecture
+
 ```
-User Input → Profile Agent → Plan Generator Agent → Scheduler Agent → Frontend Display
-                    ↓              ↓                     ↓
-            (Feature Extraction) (ML Model Inference)  (Execution Plan)
+┌─────────────────┐
+│  User Input     │  (Age, Gender, Goals, Activity Data)
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────────────────────────────┐
+│  🤖 Profile & Assessment Agent          │  
+│  ├─ Data Validation                      │
+│  ├─ Feature Extraction                   │
+│  └─ ML Model Inference (Fitness Level)  │
+└────────┬────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────┐
+│  🎯 Plan Generator Agent                │
+│  ├─ Workout Planning                     │
+│  ├─ Nutrition Suggestions                │
+│  └─ 4-Week Personalized Plan             │
+└────────┬────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────┐
+│  📅 Scheduler & Progress Agent          │
+│  ├─ Daily Checklist Generation           │
+│  ├─ Progress Tracking                    │
+│  └─ Adaptive Recommendations             │
+└────────┬────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────┐
+│  🎨 Frontend Display                    │
+│  ├─ Plan Visualization                   │
+│  ├─ Progress Dashboard                   │
+│  └─ User Feedback Loop                   │
+└─────────────────────────────────────────┘
 ```
-
-### Core Components
-
-#### **1. Backend (Python + Gemini AI)**
-- **Agent Development Kit (ADK)**: Multi-agent orchestration using Google's ADK
-- **ML Models**: Classification and regression models for fitness prediction
-- **Tool Integration**: Custom Python tools for data processing, API calls, and plan generation
-- **API Layer**: RESTful endpoints exposing agent capabilities
-
-#### **2. Frontend (HTML + JavaScript)**
-- User onboarding form (profile data collection)
-- Generated plan visualization (workouts, meal prep, progress tracking)
-- Real-time feedback dashboard
-- Integration with backend API for dynamic updates
-
-#### **3. Data Pipeline (Kaggle-based)**
-- Source: Public Kaggle fitness/health datasets (e.g., fitness tracking data, BMI correlations)
-- Preprocessing: Feature normalization, encoding, handling missing values
-- Training: Classification model (fitness level: "beginner/intermediate/advanced")
-- Deployment: Model weights saved and loaded in backend agents
 
 ---
 
 ## 🤖 Multi-Agent System
 
-FitSync-AI implements **three primary agents** communicating via ADK:
-
 ### **Agent 1: Profile & Assessment Agent**
-- **Role**: Parse user inputs and assess current fitness level
-- **Tools**: Data validation tool, feature extraction tool, fitness scoring tool
-- **Output**: Standardized user profile and initial fitness classification
-- **Integration**: Calls trained ML model to predict fitness category
+- **Role**: Parse user inputs and assess fitness level
+- **Tools**: Data validation, feature extraction, fitness scoring
+- **Output**: Standardized user profile + fitness classification
+- **ML Integration**: Calls trained classifier to predict fitness category
 
 ### **Agent 2: Plan Generator Agent**
-- **Role**: Create personalized workout and diet plans based on user profile and goals
-- **Tools**: Plan template tool, calorie calculator tool, workout database tool
-- **Output**: Multi-week fitness and nutrition plan with daily breakdown
-- **Logic**: Adjusts intensity/duration based on user's fitness level and goals
+- **Role**: Create personalized workout & diet plans
+- **Tools**: Plan templates, calorie calculator, workout database
+- **Output**: Multi-week fitness plan with daily breakdown
+- **Logic**: Adjusts intensity based on fitness level and goals
 
 ### **Agent 3: Scheduler & Progress Agent**
-- **Role**: Convert plans into executable daily schedules and track adherence
-- **Tools**: Calendar tool, progress tracker tool, feedback generator tool
+- **Role**: Convert plans into executable schedules and track progress
+- **Tools**: Calendar management, progress tracking, feedback generation
 - **Output**: Daily checklist, achievement badges, adaptive recommendations
-- **Memory**: Maintains session state for user history and plan adjustments
+- **Memory**: Session state for user history and plan adjustments
 
 ---
 
 ## 📊 ML Model Integration
 
 ### **Dataset Source**
-- **Kaggle Dataset**: Fitness tracking data (age, BMI, heart rate, steps, calories burned, workout frequency)
+- **Source**: Kaggle Fitness Tracking Dataset
 - **Features**: Age, Gender, BMI, Activity Level, Weekly Steps, Calories Burned, Sleep Hours, Workout Frequency
-- **Target Variable**: Fitness Level (Classification: 0=Needs Improvement, 1=Moderate, 2=Fit)
+- **Target**: Fitness Level Classification (Beginner → Intermediate → Advanced)
 
 ### **Model Pipeline**
-```python
-1. Data Preprocessing → 2. Feature Engineering → 3. Train/Validation Split
-4. Model Training (Random Forest / Gradient Boosting) → 5. Hyperparameter Tuning
-6. Model Evaluation (Accuracy, F1-Score) → 7. Deployment as Agent Tool
-```
 
-### **Integration in Agents**
-The fitness classification model is wrapped as a **tool** callable by the Profile Agent:
-```python
-def predict_fitness_level(age, bmi, activity_level, weekly_steps):
-    # Load pre-trained model
-    return model.predict([[age, bmi, activity_level, weekly_steps]])
+```
+Data → Preprocessing → Feature Engineering → Model Training → Hyperparameter Tuning → Evaluation → Deployment
+                        (Normalization)       (Random Forest/     (Grid Search)        (Accuracy,    (As Agent
+                                             Gradient Boosting)                       F1-Score)     Tool)
 ```
 
 ---
 
-## 🛠 Tech Stack
+## 🛠️ Tech Stack
 
 | Component | Technology |
 |-----------|------------|
-| **Backend Language** | Python 3.x |
-| **AI Agent Framework** | Google Agent Development Kit (ADK) / Gemini |
-| **ML Framework** | Scikit-learn, Pandas, NumPy |
-| **Frontend** | HTML5, Vanilla JavaScript |
+| **Backend Language** | Python 3.8+ |
+| **AI Framework** | Google Agent Development Kit (ADK) + Gemini |
+| **ML Libraries** | Scikit-learn, Pandas, NumPy |
+| **Frontend** | HTML5, Vanilla JavaScript, CSS3 |
 | **API** | Flask / FastAPI |
 | **Database** | SQLite / Firebase (optional) |
-| **Deployment** | Google Cloud (optional) |
-| **Data Source** | Kaggle Datasets |
+| **Deployment** | Google Cloud Run (optional) |
+| **Data Source** | Kaggle Public Datasets |
 
 ---
 
@@ -122,31 +143,31 @@ def predict_fitness_level(age, bmi, activity_level, weekly_steps):
 FitSync-AI/
 ├── backend/
 │   ├── agents/
-│   │   ├── profile_agent.py          # Profile parsing & assessment
-│   │   ├── plan_generator_agent.py   # Workout & diet plan creation
-│   │   └── scheduler_agent.py        # Execution scheduling & progress
+│   │   ├── profile_agent.py              # User profiling & assessment
+│   │   ├── plan_generator_agent.py       # Workout & diet planning
+│   │   └── scheduler_agent.py            # Schedule & progress tracking
 │   ├── tools/
-│   │   ├── data_tools.py             # Feature extraction, validation
-│   │   ├── ml_tools.py               # Model inference, predictions
-│   │   ├── planning_tools.py         # Plan generation logic
-│   │   └── schedule_tools.py         # Calendar & reminder tools
+│   │   ├── data_tools.py                 # Feature extraction, validation
+│   │   ├── ml_tools.py                   # Model inference, predictions
+│   │   ├── planning_tools.py             # Plan generation logic
+│   │   └── schedule_tools.py             # Calendar & reminder tools
 │   ├── models/
-│   │   ├── fitness_classifier.pkl    # Trained ML model
-│   │   └── model_training.py         # Training pipeline
+│   │   ├── fitness_classifier.pkl        # Pre-trained ML model
+│   │   └── model_training.py             # Training pipeline
 │   ├── api/
-│   │   └── main.py                   # Flask API endpoints
-│   └── config.py                     # Configuration & API keys
+│   │   └── main.py                       # Flask API endpoints
+│   └── config.py                         # Configuration & API keys
 ├── frontend/
-│   ├── index.html                    # Main UI
+│   ├── index.html                        # Main UI
 │   ├── css/
-│   │   └── style.css                 # Styling
+│   │   └── style.css                     # Styling
 │   └── js/
-│       └── app.js                    # Frontend logic & API integration
+│       └── app.js                        # Frontend logic & API integration
 ├── data/
-│   ├── fitness_data.csv              # Kaggle dataset
-│   └── processed_data.csv            # Preprocessed dataset
-├── README.md
+│   ├── fitness_data.csv                  # Kaggle dataset
+│   └── processed_data.csv                # Preprocessed dataset
 ├── requirements.txt
+├── README.md
 └── LICENSE
 ```
 
@@ -156,36 +177,40 @@ FitSync-AI/
 
 ### **Prerequisites**
 - Python 3.8+
-- Kaggle API credentials (for dataset access)
+- Kaggle API credentials
 - Google Cloud Project with Gemini API enabled
 
 ### **Installation**
 
 ```bash
-# 1. Clone repository
+# 1️⃣ Clone repository
 git clone https://github.com/SujitYalmar/FitSync-AI.git
 cd FitSync-AI
 
-# 2. Create virtual environment
+# 2️⃣ Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# 3. Install dependencies
+# 3️⃣ Install dependencies
 pip install -r requirements.txt
 
-# 4. Set up environment variables
+# 4️⃣ Set up environment variables
 echo "GOOGLE_API_KEY=your_key_here" > .env
 echo "KAGGLE_USERNAME=your_username" >> .env
 echo "KAGGLE_KEY=your_key" >> .env
 ```
 
-### **Training the Model (Optional)**
+### **Training the Model** (Optional)
 
 ```bash
 python backend/models/model_training.py
 ```
 
-This downloads the Kaggle fitness dataset, preprocesses it, trains the fitness classifier, and saves it as `fitness_classifier.pkl`.
+This will:
+- Download the Kaggle fitness dataset
+- Preprocess and normalize features
+- Train the fitness classifier
+- Save the model as `fitness_classifier.pkl`
 
 ### **Running the System**
 
@@ -193,7 +218,7 @@ This downloads the Kaggle fitness dataset, preprocesses it, trains the fitness c
 # Start backend API
 python backend/api/main.py
 
-# In browser, navigate to
+# Open in browser
 http://localhost:5000
 ```
 
@@ -201,61 +226,73 @@ http://localhost:5000
 
 ## 📚 How It Works (End-to-End Flow)
 
-1. **User Onboarding**: User enters profile (age, gender, fitness level, goals, dietary preferences)
-2. **Profile Agent**: Validates input, extracts features, runs ML model to classify fitness level
-3. **Plan Generator**: Creates 4-week personalized plan with daily workouts and meal suggestions
-4. **Scheduler**: Converts plan into executable daily checklist with reminders
-5. **Frontend Display**: Shows user the generated plan, tracks daily progress
-6. **Progress Feedback**: Scheduler agent monitors adherence and adapts recommendations
+```
+1. User Onboarding
+   └─ Enter profile (age, gender, goals, preferences)
+
+2. Profile Agent Processing
+   └─ Validate input → Extract features → Run ML classifier
+
+3. Plan Generation
+   └─ Create 4-week personalized workout & meal plan
+
+4. Schedule Creation
+   └─ Convert plan to daily executable checklist
+
+5. Frontend Display
+   └─ Visualize plan and track daily progress
+
+6. Adaptive Feedback
+   └─ Monitor adherence and adapt recommendations
+```
 
 ---
 
-## 🎓 Kaggle 5-Day Agents Intensive Alignment
+## 🎓 Course Alignment: Kaggle 5-Day Agents Intensive
 
-This capstone project implements concepts from all 5 days of the course:
+| Day | Topic | Implementation |
+|-----|-------|----------------|
+| **Day 1** | Agent Basics | Multi-agent orchestration framework |
+| **Day 2** | Tools & MCP | Custom Python tools for all operations |
+| **Day 3** | Context & Memory | Session state & user history tracking |
+| **Day 4** | Evaluation | Plan quality scoring & adherence metrics |
+| **Day 5** | Production | API design, error handling, scalability |
 
-| Day | Topic | Implementation in FitSync-AI |
-|-----|-------|-----------------------------|
-| **Day 1** | Agent Basics & Fundamentals | Multi-agent orchestration framework |
-| **Day 2** | Tools & Model Context Protocol | Custom Python tools for data processing, ML inference, planning |
-| **Day 3** | Context & Memory Management | Session state management across agents, user history tracking |
-| **Day 4** | Evaluation & Observability | Plan quality scoring, adherence metrics, agent decision logging |
-| **Day 5** | Production & Deployment | API design, error handling, scalability considerations |
-
-**Track**: Concierge Agent (Personal AI Fitness Coach)
+**Track**: Concierge Agent (Personal AI Fitness Coach) ✅
 
 ---
 
-## 📊 Key Features
+## ✨ Key Features
 
-✅ **Personalized Plans**: Data-driven recommendations based on individual fitness level
-✅ **Multi-Agent Orchestration**: Specialized agents for profiling, planning, and scheduling
-✅ **ML Model Integration**: Kaggle dataset-trained fitness classifier
-✅ **Adaptive Feedback**: Progress tracking with dynamic plan adjustments
-✅ **Tool Ecosystem**: Reusable tools for data processing, planning, and execution
-✅ **API-First Design**: RESTful backend for easy frontend integration
-✅ **Production Ready**: Error handling, logging, and configuration management
+- 🎯 **Personalized Plans** - Data-driven recommendations based on fitness level
+- 🤖 **Multi-Agent Orchestration** - Specialized agents for profiling, planning, scheduling
+- 📊 **ML Integration** - Kaggle dataset-trained fitness classifier
+- 📈 **Adaptive Feedback** - Progress tracking with dynamic adjustments
+- 🛠️ **Tool Ecosystem** - Reusable tools for data processing and planning
+- 🔌 **API-First Design** - RESTful backend for easy integration
+- 🏗️ **Production Ready** - Error handling, logging, configuration management
 
 ---
 
 ## 🔄 Future Enhancements
 
-- [ ] Advanced ML models (Neural Networks for progression prediction)
-- [ ] Integration with fitness wearable APIs (Fitbit, Apple Watch, Garmin)
-- [ ] Real-time coach feedback via voice/chat agents
-- [ ] A/B testing framework for plan effectiveness
-- [ ] Multi-language support
-- [ ] Mobile app (Flutter) for better UX
-- [ ] Cloud deployment on Google Cloud Run
+- [ ] **Neural Networks** - Advanced progression prediction
+- [ ] **Wearable Integration** - Fitbit, Apple Watch, Garmin APIs
+- [ ] **Voice Coach** - Real-time feedback via voice/chat agents
+- [ ] **A/B Testing** - Framework for plan effectiveness
+- [ ] **Multi-language** - Support for global users
+- [ ] **Mobile App** - Flutter cross-platform application
+- [ ] **Cloud Deployment** - Google Cloud Run & CI/CD pipelines
+- [ ] **Community Features** - Social challenges and leaderboards
 
 ---
 
 ## 📖 References
 
 - [Kaggle 5-Day AI Agents Intensive](https://www.kaggle.com/learn-guide/5-day-agents)
-- [Google Agent Development Kit Docs](https://ai.google.dev/)
+- [Google Agent Development Kit](https://ai.google.dev/)
 - [Gemini API Documentation](https://ai.google.dev/docs)
-- [Scikit-learn ML Documentation](https://scikit-learn.org/)
+- [Scikit-learn Documentation](https://scikit-learn.org/)
 
 ---
 
@@ -268,16 +305,31 @@ This project is licensed under the **MIT License** – see [LICENSE](./LICENSE) 
 ## 👤 Author
 
 **Sujit Yalmar**
-- GitHub: [@SujitYalmar](https://github.com/SujitYalmar)
-- Focus: Full-stack AI integration, Multi-agent systems, Cloud deployment
-- Capstone Project: Kaggle 5-Day AI Agents Intensive
+
+- 🔗 [GitHub](https://github.com/SujitYalmar)
+- 💼 [LinkedIn](https://linkedin.com/in/sujit-yalmar)
+- 📧 Focus: Full-stack AI, Multi-agent systems, Cloud deployment
 
 ---
 
 ## 💡 Contributing
 
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
+Contributions are welcome! Please feel free to:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+For major changes, please open an issue first to discuss what you would like to change.
 
 ---
 
-**Built with ❤️ for the Kaggle 5-Day AI Agents Intensive Capstone**
+<div align="center">
+
+### Built with ❤️ for the Kaggle 5-Day AI Agents Intensive Capstone
+
+⭐ If you found this project helpful, please consider giving it a star!
+
+</div>
